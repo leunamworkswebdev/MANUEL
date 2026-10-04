@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valorant Style Glass Login</title>
+  <!-- Google Fonts: Tungsten/Teko style gaming font and clean sans-serif -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="ihateperiodcramps.css" />
+</head>
+<body>
+
+  <div class="login-container">
+    <!-- Valorant Logo Accent -->
+    <div class="brand-header">
+      <div class="v-logo"></div>
+      <h2>SIGN IN</h2>
+    </div>
+
+    <form class="login-form">
+      <!-- Username Field -->
+      <div class="input-group">
+        <input type="text" id="username" placeholder="USERNAME" required />
+        <i class="fa-solid fa-user"></i>
+        <span class="corner-accent top-left"></span>
+        <span class="corner-accent bottom-right"></span>
+      </div>
+
+      <!-- Password Field -->
+      <div class="input-group">
+        <input type="password" id="password" placeholder="PASSWORD" required />
+        <i class="fa-solid fa-lock"></i>
+        <span class="corner-accent top-left"></span>
+        <span class="corner-accent bottom-right"></span>
+      </div>
+
+      <!-- Options: Remember Me & Forgot Password -->
+      <div class="form-options">
+        <label class="remember-me">
+          <input type="checkbox" />
+          <span class="custom-checkbox"></span>
+          STAY SIGNED IN
+        </label>
+        <a href="#" class="forgot-pass">CAN'T SIGN IN?</a>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn-login">
+        <span class="btn-text">LOG IN</span>
+        <span class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+
+      <!-- Register Link -->
+      <div class="form-footer">
+        <span>DON'T HAVE AN ACCOUNT?</span>
+        <a href="#" class="register-link">CREATE ONE</a>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

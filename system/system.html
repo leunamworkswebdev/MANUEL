@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Horizon PMS | Hotel Room Management & Reservation</title>
+    <!-- Tailwind CSS for rapid modern layout structure -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ios: {
+                            bg: '#f5f5f7',
+                            card: '#ffffff',
+                            primary: '#0071e3',
+                            hover: '#0077ed',
+                            success: '#34c759',
+                            warning: '#ff9500',
+                            danger: '#ff3b30',
+                            text: '#1d1d1f',
+                            subtext: '#86868b',
+                            border: '#d2d2d7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glassmorphism sidebar & cards */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* iOS-style spring/slime button bouncy tactile effect */
+        .ios-btn {
+            position: relative;
+            transform: translateZ(0);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.15);
+        }
+        .ios-btn:hover {
+            transform: scale(1.03) translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
+        }
+        .ios-btn:active {
+            transform: scale(0.96) translateY(1px);
+            box-shadow: 0 2px 6px rgba(0, 113, 227, 0.2);
+        }
+
+        /* Slime/Jelly wobble interactive feedback on cards */
+        .slime-card {
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+        }
+        .slime-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.08);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d2d2d7;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #86868b;
+        }
+
+        /* Toast notification animation */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .toast-animate {
+            animation: slideUp 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 glass-panel border-r border-gray-200/80 p-6 flex flex-col justify-between shrink-0 z-20">
+        <div>
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/30">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-gray-900 tracking-tight text-lg">Grand Horizon</h1>
+                    <p class="text-xs text-gray-500 font-medium">Hotel PMS & Booking</p>
+                </div>
+            </div>
+
+            <nav class="space-y-1.5">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-blue-600 bg-blue-50/80 transition-all duration-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                    Dashboard Overview
+                </button>
+                <button onclick="switchTab('rooms')" id="nav-rooms" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100/60 transition-all duration-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    Room Management <span id="roomCountBadge" class="ml-auto text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full font-semibold">0</span>
+                </button>
+                <button onclick="switchTab('reservations')" id="nav-reservations" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100/60 transition-all duration-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                    Reservations & Guests <span id="bookingCountBadge" class="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">0</span>
+                </button>
+                <button onclick="switchTab('pricing')" id="nav-pricing" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100/60 transition-all duration-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Price List & Tiers
+                </button>
+            </nav>
+        </div>
+
+        <div class="pt-6 border-t border-gray-200/80">
+            <div class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50 border border-gray-200/60">
+                <div class="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-600 font-bold flex items-center justify-center text-sm">AD</div>
+                <div class="overflow-hidden">
+                    <p class="text-sm font-semibold text-gray-900 truncate">Front Desk Admin</p>
+                    <p class="text-xs text-emerald-600 font-medium flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>System Online</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Viewport -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto max-h-screen">
+        
+        <!-- Top Action Header -->
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h2 id="pageTitle" class="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">Dashboard Overview</h2>
+                <p id="pageSubtitle" class="text-sm text-gray-500 mt-1">Real-time room availability, bubble-sorted rates, and guest bookings.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('newRoomModal')" class="ios-btn bg-white hover:bg-gray-50 text-gray-800 font-medium px-4 py-2.5 rounded-xl border border-gray-200 text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    Add Room
+                </button>
+                <button onclick="openModal('newReservationModal')" class="ios-btn bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl text-sm shadow-lg shadow-blue-500/20 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    New Reservation
+                </button>
+            </div>
+        </header>
+
+        <!-- TAB 1: DASHBOARD VIEW -->
+        <div id="tab-dashboard" class="space-y-8">
+            <!-- Metric Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="slime-card glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Total Rooms</span>
+                        <div class="p-2.5 rounded-xl bg-blue-50 text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></div>
+                    </div>
+                    <div class="flex items-baseline justify-between">
+                        <h3 id="statTotalRooms" class="text-3xl font-bold text-gray-900">0</h3>
+                        <span class="text-xs text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded-md">Managed</span>
+                    </div>
+                </div>
+
+                <div class="slime-card glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Available Rooms</span>
+                        <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                    </div>
+                    <div class="flex items-baseline justify-between">
+                        <h3 id="statAvailableRooms" class="text-3xl font-bold text-emerald-600">0</h3>
+                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md">Ready to Book</span>
+                    </div>
+                </div>
+
+                <div class="slime-card glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Active Bookings</span>
+                        <div class="p-2.5 rounded-xl bg-amber-50 text-amber-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                    </div>
+                    <div class="flex items-baseline justify-between">
+                        <h3 id="statActiveBookings" class="text-3xl font-bold text-amber-600">0</h3>
+                        <span class="text-xs text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-md">Occupied</span>
+                    </div>
+                </div>
+
+                <div class="slime-card glass-panel p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Estimated Revenue</span>
+                        <div class="p-2.5 rounded-xl bg-indigo-50 text-indigo-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+                    </div>
+                    <div class="flex items-baseline justify-between">
+                        <h3 id="statTotalRevenue" class="text-3xl font-bold text-indigo-600">$0</h3>
+                        <span class="text-xs text-indigo-700 font-semibold bg-indigo-50 px-2 py-0.5 rounded-md">Total Stays</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Room Status overview grid + Bubble Sort Preview -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left 2 Cols: Live Rooms preview -->
+                <div class="lg:col-span-2 glass-panel p-6 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h4 class="font-bold text-gray-900 text-lg">Live Room Status Grid</h4>
+                            <p class="text-xs text-gray-500">Quick glance of housekeeping & guest occupancy</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="sortRoomsByPriceBubble()" class="ios-btn text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition">
+                                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
+                                Bubble Sort by Price
+                            </button>
+                        </div>
+                    </div>
+                    <div id="dashboardRoomGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Right 1 Col: Quick Recent Activity -->
+                <div class="glass-panel p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-bold text-gray-900 text-lg">System Logs</h4>
+                            <span class="text-xs text-blue-600 font-semibold cursor-pointer hover:underline" onclick="switchTab('reservations')">View All</span>
+                        </div>
+                        <div id="recentActivityList" class="space-y-3">
+                            <!-- Rendered dynamically -->
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-200/60 text-center">
+                        <p class="text-xs text-gray-400">Grand Horizon PMS v2.4 • Bubble Sort Engine Active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: ROOM MANAGEMENT -->
+        <div id="tab-rooms" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-700">Bubble Sort Rooms By:</span>
+                    <button onclick="executeBubbleSortRooms('price')" class="ios-btn bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-xl text-xs font-semibold transition">Price (Low → High)</button>
+                    <button onclick="executeBubbleSortRooms('number')" class="ios-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-xl text-xs font-semibold transition">Room Number</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="roomSearchInput" oninput="filterRooms()" placeholder="Search room # or type..." class="px-4 py-2 bg-white/80 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64">
+                </div>
+            </div>
+
+            <!-- Full Room Grid Display -->
+            <div id="fullRoomGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                <!-- Rendered dynamically -->
+            </div>
+        </div>
+
+        <!-- TAB 3: RESERVATIONS & GUESTS -->
+        <div id="tab-reservations" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-sm font-semibold text-gray-700">Bubble Sort Reservations By:</span>
+                    <button onclick="executeBubbleSortBookings('cost')" class="ios-btn bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-xl text-xs font-semibold transition">Total Cost ($)</button>
+                    <button onclick="executeBubbleSortBookings('name')" class="ios-btn bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-xl text-xs font-semibold transition">Guest Name (A-Z)</button>
+                </div>
+                <button onclick="openModal('newReservationModal')" class="ios-btn bg-blue-600 text-white px-4 py-2.5 rounded-xl text-xs font-semibold shadow-md shadow-blue-500/20">
+                    + New Booking
+                </button>
+            </div>
+
+            <div class="glass-panel rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50/80 border-b border-gray-200/80 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                <th class="p-4 pl-6">Guest Name</th>
+                                <th class="p-4">Contact</th>
+                                <th class="p-4">Room #</th>
+                                <th class="p-4">Check-in</th>
+                                <th class="p-4">Check-out</th>
+                                <th class="p-4">Total Cost</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 pr-6 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsTableBody" class="divide-y divide-gray-100 text-sm">
+                            <!-- Rendered dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: PRICE LIST -->
+        <div id="tab-pricing" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-3xl shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">Hotel Room Category & Rate Card</h3>
+                        <p class="text-xs text-gray-500">Official nightly pricing tiers for Grand Horizon suites</p>
+                    </div>
+                    <button onclick="sortPriceListBubble()" class="ios-btn bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
+                        Bubble Sort by Rate
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="priceListCards">
+                    <!-- Rendered dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL 1: NEW RESERVATION -->
+    <div id="newReservationModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-gray-200 transform scale-95 transition-transform duration-300" id="newReservationModalContent">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-5">
+                <h3 class="font-bold text-gray-900 text-lg">New Room Reservation</h3>
+                <button onclick="closeModal('newReservationModal')" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center font-bold">&times;</button>
+            </div>
+            <form id="reservationForm" onsubmit="handleNewReservation(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Guest Full Name</label>
+                    <input type="text" id="resGuestName" required placeholder="e.g. Alexander Hamilton" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Email Address</label>
+                        <input type="email" id="resEmail" required placeholder="alex@example.com" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Phone Number</label>
+                        <input type="tel" id="resPhone" required placeholder="+1 555-0199" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Assign Available Room</label>
+                    <select id="resRoomSelect" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Check-in Date</label>
+                        <input type="date" id="resCheckIn" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Check-out Date</label>
+                        <input type="date" id="resCheckOut" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+                <div class="pt-4 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeModal('newReservationModal')" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition">Cancel</button>
+                    <button type="submit" class="ios-btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ADD ROOM -->
+    <div id="newRoomModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-gray-200 transform scale-95 transition-transform duration-300" id="newRoomModalContent">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-5">
+                <h3 class="font-bold text-gray-900 text-lg">Add New Hotel Room</h3>
+                <button onclick="closeModal('newRoomModal')" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center font-bold">&times;</button>
+            </div>
+            <form id="roomForm" onsubmit="handleNewRoom(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Room Number</label>
+                    <input type="text" id="roomNumberInput" required placeholder="e.g. 305" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Room Category / Type</label>
+                    <select id="roomTypeInput" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="Single Room">Single Room ($100/night)</option>
+                        <option value="Double Room">Double Room ($140/night)</option>
+                        <option value="Deluxe Suite">Deluxe Suite ($260/night)</option>
+                        <option value="Presidential Suite">Presidential Suite ($480/night)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nightly Rate ($ USD)</label>
+                    <input type="number" id="roomPriceInput" required placeholder="140" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="pt-4 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeModal('newRoomModal')" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition">Cancel</button>
+                    <button type="submit" class="ios-btn bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20">Save Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Floating Toast Notification -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // --- Mock Database State ---
+        let rooms = [
+            { id: 101, number: '101', type: 'Single Room', price: 100, status: 'Available' },
+            { id: 102, number: '102', type: 'Double Room', price: 140, status: 'Occupied' },
+            { id: 103, number: '103', type: 'Single Room', price: 100, status: 'Available' },
+            { id: 104, number: '104', type: 'Deluxe Suite', price: 260, status: 'Maintenance' },
+            { id: 105, number: '105', type: 'Double Room', price: 140, status: 'Occupied' },
+            { id: 106, number: '106', type: 'Presidential Suite', price: 480, status: 'Available' },
+            { id: 107, number: '107', type: 'Single Room', price: 100, status: 'Available' },
+            { id: 108, number: '108', type: 'Deluxe Suite', price: 275, status: 'Occupied' }
+        ];
+
+        let reservations = [
+            { id: 1, guestName: 'Victoria Sterling', email: 'victoria@horizon.org', phone: '+1 555-0142', roomNumber: '102', checkIn: '2026-09-28', checkOut: '2026-10-02', nights: 4, totalCost: 560, status: 'Confirmed' },
+            { id: 2, guestName: 'Marcus Vance', email: 'marcus@vance.io', phone: '+1 555-8821', roomNumber: '105', checkIn: '2026-09-29', checkOut: '2026-10-01', nights: 2, totalCost: 280, status: 'Confirmed' },
+            { id: 3, guestName: 'Elena Rostova', email: 'elena@rostova.design', phone: '+1 555-9932', roomNumber: '108', checkIn: '2026-09-30', checkOut: '2026-10-05', nights: 5, totalCost: 1375, status: 'Checked In' }
+        ];
+
+        let priceList = [
+            { category: 'Single Room', description: 'Cozy queen bed, high-speed WiFi, modern rainfall shower.', rate: 90, capacity: '1-2 Guests' },
+            { category: 'Double Room', description: 'Spacious dual-queen setup with city skyline view & workspace.', rate: 140, capacity: '2-3 Guests' },
+            { category: 'Deluxe Suite', description: 'Executive living area, king bed, soaking tub & mini-bar.', rate: 260, capacity: '2-4 Guests' },
+            { category: 'Presidential Suite', description: 'Penthouse panoramic windows, private terrace, butler service.', rate: 480, capacity: '4-6 Guests' }
+        ];
+
+        // --- Navigation Controller ---
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'rooms', 'reservations', 'pricing'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (t === tabId) {
+                    el.classList.remove('hidden');
+                    navBtn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-blue-600 bg-blue-50/80 transition-all duration-200";
+                } else {
+                    el.classList.add('hidden');
+                    navBtn.className = "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100/60 transition-all duration-200";
+                }
+            });
+
+            // Update Header Titles
+            const titles = {
+                dashboard: { title: 'Dashboard Overview', sub: 'Real-time room availability, bubble-sorted rates, and guest bookings.' },
+                rooms: { title: 'Room Management', sub: 'Inspect, sort, and manage all hotel accommodations.' },
+                reservations: { title: 'Reservations & Guests', sub: 'Manage stays, check-ins, guest details, and financial costs.' },
+                pricing: { title: 'Price List & Rate Tiers', sub: 'Official room categories and night rates.' }
+            };
+            document.getElementById('pageTitle').innerText = titles[tabId].title;
+            document.getElementById('pageSubtitle').innerText = titles[tabId].sub;
+
+            renderAll();
+        }
+
+        // --- Core Render Engine ---
+        function renderAll() {
+            renderStats();
+            renderDashboardRooms();
+            renderFullRooms();
+            renderReservations();
+            renderPriceList();
+            populateRoomDropdown();
+            renderRecentActivity();
+        }
+
+        function renderStats() {
+            document.getElementById('statTotalRooms').innerText = rooms.length;
+            const available = rooms.filter(r => r.status === 'Available').length;
+            const occupied = rooms.filter(r => r.status === 'Occupied' || r.status === 'Checked In').length;
+            document.getElementById('statAvailableRooms').innerText = available;
+            document.getElementById('statActiveBookings').innerText = reservations.length;
+            
+            const totalRev = reservations.reduce((sum, r) => sum + r.totalCost, 0);
+            document.getElementById('statTotalRevenue').innerText = '$' + totalRev.toLocaleString();
+
+            document.getElementById('roomCountBadge').innerText = rooms.length;
+            document.getElementById('bookingCountBadge').innerText = reservations.length;
+        }
+
+        // --- BUBBLE SORT IMPLEMENTATIONS ---
+        
+        // 1. Bubble Sort Rooms by Price or Room Number
+        function bubbleSortRooms(arr, criteria = 'price') {
+            let len = arr.length;
+            let swapped;
+            do {
+                swapped = false;
+                for (let i = 0; i < len - 1; i++) {
+                    let valA = criteria === 'price' ? arr[i].price : parseInt(arr[i].number);
+                    let valB = criteria === 'price' ? arr[i+1].price : parseInt(arr[i+1].number);
+                    if (valA > valB) {
+                        let tmp = arr[i];
+                        arr[i] = arr[i+1];
+                        arr[i+1] = tmp;
+                        swapped = true;
+                    }
+                }
+                len--;
+            } while (swapped);
+            return arr;
+        }
+
+        // 2. Bubble Sort Reservations by Total Cost or Guest Name
+        function bubbleSortReservations(arr, criteria = 'cost') {
+            let len = arr.length;
+            let swapped;
+            do {
+                swapped = false;
+                for (let i = 0; i < len - 1; i++) {
+                    let valA = criteria === 'cost' ? arr[i].totalCost : arr[i].guestName.toLowerCase();
+                    let valB = criteria === 'cost' ? arr[i+1].totalCost : arr[i+1].guestName.toLowerCase();
+                    if (valA > valB) {
+                        let tmp = arr[i];
+                        arr[i] = arr[i+1];
+                        arr[i+1] = tmp;
+                        swapped = true;
+                    }
+                }
+                len--;
+            } while (swapped);
+            return arr;
+        }
+
+        // 3. Bubble Sort Price List by Rate
+        function bubbleSortPrices(arr) {
+            let len = arr.length;
+            let swapped;
+            do {
+                swapped = false;
+                for (let i = 0; i < len - 1; i++) {
+                    if (arr[i].rate > arr[i+1].rate) {
+                        let tmp = arr[i];
+                        arr[i] = arr[i+1];
+                        arr[i+1] = tmp;
+                        swapped = true;
+                    }
+                }
+                len--;
+            } while (swapped);
+            return arr;
+        }
+
+        // --- Interactive Sort Triggers with Toast feedback ---
+        function executeBubbleSortRooms(criteria) {
+            rooms = bubbleSortRooms([...rooms], criteria);
+            renderFullRooms();
+            renderDashboardRooms();
+            showToast(`Rooms successfully sorted by ${criteria} using Bubble Sort algorithm!`, 'success');
+        }
+
+        function sortRoomsByPriceBubble() {
+            rooms = bubbleSortRooms([...rooms], 'price');
+            renderDashboardRooms();
+            showToast('Dashboard rooms re-ordered by Bubble Sort (Price ascending).', 'success');
+        }
+
+        function executeBubbleSortBookings(criteria) {
+            reservations = bubbleSortReservations([...reservations], criteria);
+            renderReservations();
+            showToast(`Reservations sorted by ${criteria === 'cost' ? 'Total Cost' : 'Guest Name'} via Bubble Sort!`, 'success');
+        }
+
+        function sortPriceListBubble() {
+            priceList = bubbleSortPrices([...priceList]);
+            renderPriceList();
+            showToast('Rate card sorted by Nightly Rate using Bubble Sort!', 'success');
+        }
+
+        // --- Render UI Component Functions ---
+        function renderDashboardRooms() {
+            const container = document.getElementById('dashboardRoomGrid');
+            container.innerHTML = '';
+            // Display first 6 rooms on dashboard
+            const displayRooms = rooms.slice(0, 6);
+            displayRooms.forEach(room => {
+                let statusColor = room.status === 'Available' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                  room.status === 'Occupied' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-rose-50 text-rose-700 border-rose-200';
+                let dotColor = room.status === 'Available' ? 'bg-emerald-500' : room.status === 'Occupied' ? 'bg-amber-500' : 'bg-rose-500';
+                
+                container.innerHTML += `
+                    <div class="slime-card p-4 rounded-2xl border ${statusColor} flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-gray-900 text-base">Room ${room.number}</span>
+                            <span class="text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center gap-1.5 bg-white/80 shadow-xs">
+                                <span class="w-1.5 h-1.5 rounded-full ${dotColor}"></span> ${room.status}
+                            </span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-medium text-gray-600">${room.type}</p>
+                            <p class="text-sm font-bold text-gray-900 mt-1">$${room.price}<span class="text-xs font-normal text-gray-500"> /night</span></p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderFullRooms() {
+            const container = document.getElementById('fullRoomGrid');
+            container.innerHTML = '';
+            rooms.forEach(room => {
+                let statusBg = room.status === 'Available' ? 'bg-emerald-500/10 text-emerald-700 border-emerald-200' :
+                               room.status === 'Occupied' ? 'bg-amber-500/10 text-amber-700 border-amber-200' : 'bg-rose-500/10 text-rose-700 border-rose-200';
+                
+                container.innerHTML += `
+                    <div class="slime-card glass-panel p-5 rounded-3xl border border-gray-100 flex flex-col justify-between shadow-xs">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-lg font-bold text-gray-900">Room ${room.number}</span>
+                                <span class="text-xs px-3 py-1 rounded-full font-semibold border ${statusBg}">${room.status}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 font-medium">${room.type}</p>
+                            <p class="text-lg font-extrabold text-blue-600 mt-2">$${room.price} <span class="text-xs font-normal text-gray-400">/ night</span></p>
+                        </div>
+                        <div class="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between">
+                            <button onclick="toggleRoomStatus(${room.id})" class="ios-btn text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-3 py-1.5 rounded-xl transition">
+                                Toggle Status
+                            </button>
+                            <button onclick="deleteRoom(${room.id})" class="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-1 transition">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderReservations() {
+            const tbody = document.getElementById('reservationsTableBody');
+            tbody.innerHTML = '';
+            reservations.forEach(res => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50/60 transition">
+                        <td class="p-4 pl-6 font-semibold text-gray-900">${res.guestName}</td>
+                        <td class="p-4 text-gray-600 text-xs">
+                            <div>${res.email}</div>
+                            <div class="text-gray-400">${res.phone}</div>
+                        </td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 font-semibold text-xs">Room ${res.roomNumber}</span></td>
+                        <td class="p-4 text-gray-600">${res.checkIn}</td>
+                        <td class="p-4 text-gray-600">${res.checkOut} <span class="text-xs text-gray-400">(${res.nights}n)</span></td>
+                        <td class="p-4 font-bold text-gray-900">$${res.totalCost.toLocaleString()}</td>
+                        <td class="p-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${res.status === 'Confirmed' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-blue-700'}">
+                                ${res.status}
+                            </span>
+                        </td>
+                        <td class="p-4 pr-6 text-right">
+                            <button onclick="cancelReservation(${res.id})" class="ios-btn text-xs bg-rose-50 text-rose-600 hover:bg-rose-100 px-3 py-1.5 rounded-xl font-semibold transition">
+                                Cancel Stay
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderPriceList() {
+            const container = document.getElementById('priceListCards');
+            container.innerHTML = '';
+            priceList.forEach(item => {
+                container.innerHTML += `
+                    <div class="slime-card p-6 rounded-3xl bg-gray-50/80 border border-gray-200/60 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-gray-900 text-lg">${item.category}</h4>
+                                <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">${item.capacity}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">${item.description}</p>
+                        </div>
+                        <div class="flex items-baseline justify-between pt-4 border-t border-gray-200/60">
+                            <span class="text-xs font-semibold text-gray-400 uppercase">Nightly Rate</span>
+                            <span class="text-2xl font-bold text-blue-600">$${item.rate} <span class="text-xs font-normal text-gray-500">USD</span></span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderRecentActivity() {
+            const list = document.getElementById('recentActivityList');
+            list.innerHTML = '';
+            reservations.slice(0, 4).forEach(res => {
+                list.innerHTML += `
+                    <div class="flex items-start gap-3 p-3 rounded-2xl bg-gray-50/80 border border-gray-100">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center text-xs shrink-0">${res.guestName.charAt(0)}</div>
+                        <div class="overflow-hidden">
+                            <p class="text-xs font-semibold text-gray-900 truncate">${res.guestName}</p>
+                            <p class="text-[11px] text-gray-500">Booked Room ${res.roomNumber} for $${res.totalCost}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function populateRoomDropdown() {
+            const select = document.getElementById('resRoomSelect');
+            select.innerHTML = '';
+            const availableRooms = rooms.filter(r => r.status === 'Available');
+            if (availableRooms.length === 0) {
+                select.innerHTML = '<option value="">No rooms currently available</option>';
+                return;
+            }
+            availableRooms.forEach(room => {
+                select.innerHTML += `<option value="${room.number}">Room ${room.number} - ${room.type} ($${room.price}/night)</option>`;
+            });
+        }
+
+        // --- Action Handlers & Modals ---
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            if(modalId === 'newReservationModal') populateRoomDropdown();
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function handleNewRoom(event) {
+            event.preventDefault();
+            const number = document.getElementById('roomNumberInput').value;
+            const type = document.getElementById('roomTypeInput').value;
+            const price = parseFloat(document.getElementById('roomPriceInput').value);
+
+            if(rooms.some(r => r.number === number)) {
+                showToast(`Room number ${number} already exists!`, 'error');
+                return;
+            }
+
+            rooms.push({ id: Date.now(), number, type, price, status: 'Available' });
+            closeModal('newRoomModal');
+            document.getElementById('roomForm').reset();
+            renderAll();
+            showToast(`Room ${number} successfully created!`, 'success');
+        }
+
+        function handleNewReservation(event) {
+            event.preventDefault();
+            const guestName = document.getElementById('resGuestName').value;
+            const email = document.getElementById('resEmail').value;
+            const phone = document.getElementById('resPhone').value;
+            const roomNumber = document.getElementById('resRoomSelect').value;
+            const checkIn = document.getElementById('resCheckIn').value;
+            const checkOut = document.getElementById('resCheckOut').value;
+
+            if(!roomNumber) {
+                showToast('Please select a valid available room.', 'error');
+                return;
+            }
+
+            // Calculate nights
+            const d1 = new Date(checkIn);
+            const d2 = new Date(checkOut);
+            const diffTime = Math.abs(d2 - d1);
+            const nights = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+
+            const roomObj = rooms.find(r => r.number === roomNumber);
+            const totalCost = roomObj ? roomObj.price * nights : 150 * nights;
+
+            reservations.unshift({
+                id: Date.now(),
+                guestName,
+                email,
+                phone,
+                roomNumber,
+                checkIn,
+                checkOut,
+                nights,
+                totalCost,
+                status: 'Confirmed'
+            });
+
+            // Mark room occupied
+            if(roomObj) roomObj.status = 'Occupied';
+
+            closeModal('newReservationModal');
+            document.getElementById('reservationForm').reset();
+            renderAll();
+            showToast(`Reservation confirmed for ${guestName}!`, 'success');
+        }
+
+        function toggleRoomStatus(roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            if(room) {
+                if(room.status === 'Available') room.status = 'Occupied';
+                else if(room.status === 'Occupied') room.status = 'Maintenance';
+                else room.status = 'Available';
+                renderAll();
+                showToast(`Room ${room.number} status changed to ${room.status}.`, 'success');
+            }
+        }
+
+        function deleteRoom(roomId) {
+            rooms = rooms.filter(r => r.id !== roomId);
+            renderAll();
+            showToast('Room successfully removed from inventory.', 'success');
+        }
+
+        function cancelReservation(resId) {
+            const res = reservations.find(r => r.id === resId);
+            if(res) {
+                const room = rooms.find(r => r.number === res.roomNumber);
+                if(room) room.status = 'Available';
+                reservations = reservations.filter(r => r.id !== resId);
+                renderAll();
+                showToast(`Reservation for ${res.guestName} cancelled.`, 'success');
+            }
+        }
+
+        function filterRooms() {
+            const query = document.getElementById('roomSearchInput').value.toLowerCase();
+            const container = document.getElementById('fullRoomGrid');
+            container.innerHTML = '';
+            const filtered = rooms.filter(r => r.number.toLowerCase().includes(query) || r.type.toLowerCase().includes(query));
+            
+            filtered.forEach(room => {
+                let statusBg = room.status === 'Available' ? 'bg-emerald-500/10 text-emerald-700 border-emerald-200' :
+                               room.status === 'Occupied' ? 'bg-amber-500/10 text-amber-700 border-amber-200' : 'bg-rose-500/10 text-rose-700 border-rose-200';
+                
+                container.innerHTML += `
+                    <div class="slime-card glass-panel p-5 rounded-3xl border border-gray-100 flex flex-col justify-between shadow-xs">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-lg font-bold text-gray-900">Room ${room.number}</span>
+                                <span class="text-xs px-3 py-1 rounded-full font-semibold border ${statusBg}">${room.status}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 font-medium">${room.type}</p>
+                            <p class="text-lg font-extrabold text-blue-600 mt-2">$${room.price} <span class="text-xs font-normal text-gray-400">/ night</span></p>
+                        </div>
+                        <div class="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between">
+                            <button onclick="toggleRoomStatus(${room.id})" class="ios-btn text-xs bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-3 py-1.5 rounded-xl transition">
+                                Toggle Status
+                            </button>
+                            <button onclick="deleteRoom(${room.id})" class="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-1 transition">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- Toast Notification Helper ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-gray-900 text-white' : 'bg-rose-600 text-white';
+            toast.className = `toast-animate ${bgClass} px-5 py-3 rounded-2xl shadow-xl text-sm font-medium flex items-center gap-3 pointer-events-auto`;
+            toast.innerHTML = `
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initial App Load
+        window.onload = function() {
+            renderAll();
+        };
+    </script>
+</body>
+</html>
