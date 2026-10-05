@@ -2,247 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Manuel Abalos | Front-End Developer Portfolio</title>
-  
- 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manuel Abalos | Interactive Morph Portfolio</title>
   <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
 
- 
+  <!-- Morphing Glass Background Container -->
+  <div class="morph-bg-container">
+    <div id="morphBlob1" class="morph-blob blob-1"></div>
+    <div id="morphBlob2" class="morph-blob blob-2"></div>
+    <div id="morphBlob3" class="morph-blob blob-3"></div>
+  </div>
+
+  <!-- Navigation Bar -->
   <header class="navbar">
-    <div class="logo">MA<span>.dev</span></div>
+    <div class="logo">
+      <span class="logo-accent">&lt;</span>MANUEL<span class="logo-accent">/&gt;</span>
+      <span class="dimension-badge" id="currentDimensionBadge">DIM: HOME</span>
+    </div>
     <nav>
-      <a href="#about">About</a>
-      <a href="#skills">Skills</a>
-      <a href="#projects">Projects</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#contact">Contact</a>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-btn active" data-page="home"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#about" class="nav-btn" data-page="about"><i class="fas fa-user"></i> About</a></li>
+        <li><a href="#skills" class="nav-btn" data-page="skills"><i class="fas fa-code"></i> Skills</a></li>
+        <li><a href="#projects" class="nav-btn" data-page="projects"><i class="fas fa-laptop-code"></i> Projects</a></li>
+        <li><a href="#gallery" class="nav-btn" data-page="gallery"><i class="fas fa-photo-video"></i> Gallery</a></li>
+        <li><a href="#contact" class="nav-btn" data-page="contact"><i class="fas fa-paper-plane"></i> Contact</a></li>
+      </ul>
     </nav>
   </header>
 
- 
-  <section id="about" class="hero-section">
-    <div class="hero-content">
-      <span class="badge">Fresh BSIT Graduate</span>
-      <h1>Hi, I'm <span class="gradient-text">Manuel Abalos</span></h1>
-      <h2>Aspiring Front-End Developer</h2>
-      
-      <p class="bio">
-        Passionate about crafting responsive design and interactive interfaces. 
-        Currently enhancing my skills in JavaScript, React.js, and UI/UX design to build impactful web applications that solve real-world problems.
-      </p>
+  <!-- Main Multi-Dimensional Content Container -->
+  <main class="multiverse-container">
 
-      <div class="mindset-tags">
-        <span><i class="fa-solid fa-fire"></i> Perseverance</span>
-        <span><i class="fa-solid fa-book-open"></i> Continuous Learning</span>
-      </div>
-
-      <div class="hero-buttons">
-        <a href="#contact" class="btn primary-btn"><i class="fa-solid fa-paper-plane"></i> Get In Touch</a>
-        <a href="https://github.com/leunamworkswebdev" target="_blank" class="btn secondary-btn"><i class="fa-brands fa-github"></i> GitHub Profile</a>
-        <a href="resume.pdf" download class="btn outline-btn"><i class="fa-solid fa-file-arrow-down"></i> Download Resume</a>
-      </div>
-    </div>
-  </section>
-
- 
-  <section id="skills" class="skills-section">
-    <h2 class="section-title">Technologies & Tools</h2>
-    
-    <div class="skills-grid">
-      <div class="glass-card skill-card">
-        <h3><i class="fa-solid fa-code"></i> Front-End</h3>
-        <div class="tags">
-          <span>HTML5</span>
-          <span>CSS3</span>
-          <span>JavaScript</span>
-          <span>React.js</span>
-          <span>Bootstrap</span>
-          <span>Tailwind CSS</span>
+    <!-- 1. HOME DIMENSION -->
+    <section id="home" class="dimension-page active">
+      <div class="glass-hero tilt-card">
+        <div class="hero-content">
+          <div class="portal-tag"><i class="fas fa-magic"></i> Interactive Morphing Interface</div>
+          <h1>Hi, I'm <span class="gradient-text">Manuel Abalos</span></h1>
+          <p class="subtitle">Junior Web Developer &amp; Virtual Assistant building fluid digital solutions.</p>
+          <div class="hero-buttons">
+            <button class="dimension-jump-btn" data-jump="projects"><i class="fas fa-rocket"></i> Explore Projects</button>
+            <button class="dimension-jump-btn secondary" data-jump="contact"><i class="fas fa-envelope"></i> Get in Touch</button>
+          </div>
+          <div class="social-links">
+            <a href="https://github.com/leunamworkswebdev" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="mailto:your-email@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="glass-card skill-card">
-        <h3><i class="fa-solid fa-screws-gutter"></i> Developer Tools</h3>
-        <div class="tags">
-          <span>Git</span>
-          <span>GitHub</span>
-          <span>VS Code</span>
-          <span>Figma</span>
-          <span>NetBeans</span>
+    <!-- 2. ABOUT DIMENSION -->
+    <section id="about" class="dimension-page">
+      <div class="dimension-header">
+        <h2>About <span class="gradient-text">Me</span></h2>
+        <p>Interactive journey through my focus, background, and direction.</p>
+      </div>
+      <div class="glass-card full-width tilt-card">
+        <div class="about-grid">
+          <div class="about-text">
+            <h3>Junior Web Developer &amp; VA</h3>
+            <p>I build clean, responsive front-end layouts with interactive web features and robust backend database integrations. Passionate about user experience, UI aesthetics, and efficient workflows.</p>
+            <div class="interactive-pills">
+              <span class="interactive-pill" onclick="this.classList.toggle('active')"><i class="fas fa-map-marker-alt"></i> Davao City, PH</span>
+              <span class="interactive-pill" onclick="this.classList.toggle('active')"><i class="fas fa-briefcase"></i> Open for Remote Work</span>
+              <span class="interactive-pill" onclick="this.classList.toggle('active')"><i class="fas fa-graduation-cap"></i> Continuous Learner</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
- 
-  <section id="projects" class="projects-section">
-    <h2 class="section-title">Featured Projects</h2>
-
-    <div class="projects-grid">
-      
-      <!-- Student Management System -->
-      <div class="glass-card project-card">
-        <h3>Student Management System</h3>
-        <p>A web-based system for managing student information, announcements, and academic records seamlessly.</p>
-        
-        <div class="tech-stack">
-          <span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span>
+    <!-- 3. SKILLS DIMENSION -->
+    <section id="skills" class="dimension-page">
+      <div class="dimension-header">
+        <h2>Technical <span class="gradient-text">Skills</span></h2>
+        <p>Hover over or tap skills to trigger live interactive metric updates.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="glass-card skill-card tilt-card" data-level="90%">
+          <i class="fab fa-html5 skill-icon"></i>
+          <h4>HTML &amp; CSS</h4>
+          <p>Responsive layouts, Flexbox/Grid, &amp; glassmorphism.</p>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
         </div>
-
-        <ul class="feature-list">
-          <li><i class="fa-solid fa-check"></i> Student dashboard & authentication</li>
-          <li><i class="fa-solid fa-check"></i> Announcement system</li>
-          <li><i class="fa-solid fa-check"></i> Student records management</li>
-          <li><i class="fa-solid fa-check"></i> Fully responsive interface</li>
-        </ul>
-
-        <div class="card-links">
-          <a href="https://github.com/leunamworkswebdev" target="_blank" class="btn small-btn"><i class="fa-brands fa-github"></i> View Project</a>
-          <a href="https://figma.com" target="_blank" class="btn small-btn outline"><i class="fa-brands fa-figma"></i> Figma Design</a>
+        <div class="glass-card skill-card tilt-card" data-level="85%">
+          <i class="fab fa-js skill-icon"></i>
+          <h4>JavaScript</h4>
+          <p>DOM manipulation, interactive animations, &amp; ES6+.</p>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%;"></div></div>
+        </div>
+        <div class="glass-card skill-card tilt-card" data-level="70%">
+          <i class="fab fa-react skill-icon"></i>
+          <h4>React (Ongoing)</h4>
+          <p>Component architecture and stateful applications.</p>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 70%;"></div></div>
+        </div>
+        <div class="glass-card skill-card tilt-card" data-level="80%">
+          <i class="fab fa-php skill-icon"></i>
+          <h4>PHP &amp; MySQL</h4>
+          <p>Server-side logic, database design, and CRUD APIs.</p>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%;"></div></div>
+        </div>
+        <div class="glass-card skill-card tilt-card" data-level="75%">
+          <i class="fab fa-java skill-icon"></i>
+          <h4>Java</h4>
+          <p>Object-oriented programming and application logic.</p>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%;"></div></div>
+        </div>
+        <div class="glass-card skill-card tilt-card" data-level="88%">
+          <i class="fab fa-git-alt skill-icon"></i>
+          <h4>Git &amp; GitHub</h4>
+          <p>Version control, branch management, and workflows.</p>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 88%;"></div></div>
         </div>
       </div>
+    </section>
 
-    
-      <div class="glass-card project-card">
-        <h3>SNEAKPICK – Sneaker Selection System</h3>
-        <p>An interactive system where users browse sneakers, filter by brands/sizes, and explore detailed product specs.</p>
-        
-        <div class="tech-stack">
-          <span>Java</span><span>Java Swing</span><span>NetBeans</span><span>Data Structures</span>
+    <!-- 4. PROJECTS DIMENSION -->
+    <section id="projects" class="dimension-page">
+      <div class="dimension-header">
+        <h2>Featured <span class="gradient-text">Projects</span></h2>
+        <p>Interactive project showcase with real-time detail expansion.</p>
+      </div>
+      <div class="projects-grid">
+        <div class="glass-card project-card tilt-card">
+          <div class="project-badge">Database System</div>
+          <h3>Student Management System</h3>
+          <p>Comprehensive system for student enrollment, record management, and academic grading.</p>
+          <button class="expand-project-btn"><i class="fas fa-chevron-down"></i> Details</button>
+          <div class="project-details">
+            <p><strong>Stack:</strong> PHP, MySQL, HTML5, CSS3</p>
+            <p>Features automated student record lookup and grade report generation.</p>
+          </div>
         </div>
-
-        <ul class="feature-list">
-          <li><i class="fa-solid fa-check"></i> Sneaker product cards & size/color selection</li>
-          <li><i class="fa-solid fa-check"></i> Brand filtering & live search</li>
-          <li><i class="fa-solid fa-check"></i> Singly Linked List implementation</li>
-        </ul>
-
-        <div class="card-links">
-          <a href="https://github.com/leunamworkswebdev" target="_blank" class="btn small-btn"><i class="fa-brands fa-github"></i> View Project</a>
-          <a href="https://figma.com" target="_blank" class="btn small-btn outline"><i class="fa-brands fa-figma"></i> Figma Design</a>
+        <div class="glass-card project-card tilt-card">
+          <div class="project-badge">E-Commerce</div>
+          <h3>SNEAKPICK Sneaker System</h3>
+          <p>Custom footwear showcase and inventory management platform.</p>
+          <button class="expand-project-btn"><i class="fas fa-chevron-down"></i> Details</button>
+          <div class="project-details">
+            <p><strong>Stack:</strong> JavaScript, CSS3, HTML5</p>
+            <p>Interactive filtering, shopping cart preview, and product view gallery.</p>
+          </div>
+        </div>
+        <div class="glass-card project-card tilt-card">
+          <div class="project-badge">Library Tech</div>
+          <h3>E-Library System</h3>
+          <p>Digital platform for managing library catalog, book issuance, and user borrowing records.</p>
+          <button class="expand-project-btn"><i class="fas fa-chevron-down"></i> Details</button>
+          <div class="project-details">
+            <p><strong>Stack:</strong> Java, MySQL, Swing UI</p>
+            <p>Tracks search availability, overdue fines, and book lending status.</p>
+          </div>
         </div>
       </div>
+    </section>
 
-      
-      <div class="glass-card project-card">
-        <h3>E-Library System</h3>
-        <p>A responsive library website designed to help students discover and access digital library resources and books.</p>
-        
-        <div class="tech-stack">
-          <span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span>
+    <!-- 5. GALLERY DIMENSION -->
+    <section id="gallery" class="dimension-page">
+      <div class="dimension-header">
+        <h2>Works &amp; <span class="gradient-text">Gallery</span></h2>
+        <p>System screenshots, analytics documents, team photos, and video demos.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="glass-card gallery-item tilt-card">
+          <img src="Screenshot 2026-10-04 231336.png" alt="Grand Horizon Hotel PMS Dashboard" />
+          <div class="gallery-info">
+            <h4>Grand Horizon PMS Dashboard</h4>
+            <p>Hotel management dashboard featuring real-time room status tracking.</p>
+          </div>
         </div>
-
-        <ul class="feature-list">
-          <li><i class="fa-solid fa-check"></i> Online book browsing & category filtering</li>
-          <li><i class="fa-solid fa-check"></i> Real-time search functionality</li>
-          <li><i class="fa-solid fa-check"></i> Clean student interface & responsive layout</li>
-        </ul>
-
-        <div class="card-links">
-          <a href="https://github.com/leunamworkswebdev" target="_blank" class="btn small-btn"><i class="fa-brands fa-github"></i> View Project</a>
-          <a href="https://figma.com" target="_blank" class="btn small-btn outline"><i class="fa-brands fa-figma"></i> Figma Design</a>
+        <div class="glass-card gallery-item tilt-card">
+          <img src="Screenshot 2026-10-04 230714.png" alt="System Sign-In Interface" />
+          <div class="gallery-info">
+            <h4>Valorant-Style Sign-In UI</h4>
+            <p>Custom gaming-inspired sign-in portal interface.</p>
+          </div>
+        </div>
+        <div class="glass-card gallery-item tilt-card">
+          <img src="Screenshot 2026-10-05 004541.png" alt="Excel Analytics Sheet" />
+          <div class="gallery-info">
+            <h4>Excel Performance Sheet</h4>
+            <p>Performance rating spreadsheet with conditional formulas and charts.</p>
+          </div>
+        </div>
+        <div class="glass-card gallery-item tilt-card">
+          <img src="oneofmyacchievements.jpg" alt="Teamwork Achievement" />
+          <div class="gallery-info">
+            <h4>Teamwork &amp; Achievement</h4>
+            <p>Basketball team competitive tournament achievement showcase photo.</p>
+          </div>
+        </div>
+        <div class="glass-card gallery-item video-item tilt-card">
+          <video controls width="100%">
+            <source src="codelyricssong.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="gallery-info">
+            <h4>Lyrical Code Project</h4>
+            <p>Terminal script syncing lyrics dynamically with audio playback.</p>
+          </div>
         </div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-
-  <section id="gallery" class="gallery-section">
-    <h2 class="section-title">Works, Achievements & Code Showcase</h2>
-
-    <div class="gallery-grid">
-      
-      <div class="glass-card gallery-item">
-        <img src="Screenshot 2026-10-04 231336.png" alt="Grand Horizon Hotel Dashboard" />
-        <div class="gallery-info">
-          <h4>Grand Horizon Hotel PMS</h4>
-          <p>Real-time room availability, bubble-sorted rates, and guest bookings dashboard[cite: 3].</p>
-        </div>
+    <!-- 6. CONTACT DIMENSION -->
+    <section id="contact" class="dimension-page">
+      <div class="dimension-header">
+        <h2>Contact <span class="gradient-text">Dimension</span></h2>
+        <p>Send a direct message through the interactive form.</p>
       </div>
-
-     
-      <div class="glass-card gallery-item">
-        <img src="Screenshot 2026-10-04 230714.png" alt="Valorant-inspired Login UI" />
-        <div class="gallery-info">
-          <h4>Valorant-Inspired UI / Authentication</h4>
-          <p>Custom authentication interface featuring custom background overlays and UI design[cite: 4].</p>
-        </div>
+      <div class="glass-card contact-card tilt-card">
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label for="contactName">Your Name</label>
+            <input type="text" id="contactName" placeholder="Enter your name" required />
+          </div>
+          <div class="form-group">
+            <label for="contactEmail">Your Email</label>
+            <input type="email" id="contactEmail" placeholder="Enter your email" required />
+          </div>
+          <div class="form-group">
+            <label for="contactMessage">Message</label>
+            <textarea id="contactMessage" rows="5" placeholder="Type your message..." required></textarea>
+          </div>
+          <button type="submit" class="dimension-jump-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
       </div>
+    </section>
 
-     
-      <div class="glass-card gallery-item">
-        <img src="Screenshot 2026-10-05 004541.png" alt="Excel Performance Analysis Work" />
-        <div class="gallery-info">
-          <h4>Data Analytics & Excel Work</h4>
-          <p>Quarterly performance score tracker, conditional formatting, and bonus tier analysis[cite: 1].</p>
-        </div>
-      </div>
-
-     
-      <div class="glass-card gallery-item">
-        <img src="achievements.jpg" alt="Basketball Tournament Achievement" />
-        <div class="gallery-info">
-          <h4>Team Achievement & Sports</h4>
-          <p>Tournament participation, teamwork, and active sports leadership[cite: 2].</p>
-        </div>
-      </div>
-
-      
-      <div class="glass-card gallery-item">
-        <video controls width="100%">
-          <source src="codelyricssong.mp4" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-        <div class="gallery-info">
-          <h4>Lyrical Code Project</h4>
-          <p>Interactive terminal script streaming song lyrics</p>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="working-section">
-    <div class="glass-card working-card">
-      <h2 class="section-title">What I'm Currently Working On</h2>
-      <ul class="learning-list">
-        <li><i class="fa-solid fa-bolt"></i> Elevating core JavaScript & ES6+ concepts</li>
-        <li><i class="fa-solid fa-atom"></i> Master building modular web apps in React.js</li>
-        <li><i class="fa-solid fa-mobile-screen"></i> Perfecting responsive design & CSS frameworks</li>
-        <li><i class="fa-solid fa-wand-magic-sparkles"></i> Enhancing UI/UX interactive mechanics</li>
-        <li><i class="fa-solid fa-rocket"></i> Creating full-stack real-world web solutions</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="contact" class="contact-section">
-    <h2 class="section-title">Contact Me</h2>
-    <p class="contact-sub">Feel free to reach out for collaborations or opportunities!</p>
-
-    <div class="contact-cards">
-      <a href="mailto:zeuronist@gmail.com" class="glass-card contact-card">
-        <i class="fa-solid fa-envelope"></i>
-        <span>Email Me</span>
-        <p>zeuronist@gmail.com</p>
-      </a>
-
-      <a href="https://github.com/leunamworkswebdev" target="_blank" class="glass-card contact-card">
-        <i class="fa-brands fa-github"></i>
-        <span>GitHub</span>
-        <p>leunamworkswebdev</p>
-      </a>
-    </div>
-  </section>
-
-  <footer>
-    <p>© 2026 Manuel Abalos. Thanks for visiting my profile!</p>
-  </footer>
+  </main>
 
   <script src="script.js"></script>
 </body>
